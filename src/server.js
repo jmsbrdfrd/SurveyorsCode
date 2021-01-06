@@ -2,6 +2,7 @@ const path = require('path')
 const express = require('express')
 
 const Article = require('./db/models/article')
+const User = require('./db/models/user')
 require('./db/mongoose')
 
 
