@@ -6,7 +6,6 @@ const Article = require('../db/models/article')
 
 // create article
 router.post('/article', async (req, res) => {
-
     const article = new Article(req.body) // create article
 
     try {

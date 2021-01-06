@@ -19,7 +19,7 @@ const port = process.env.PORT || 5000
 app.use(express.static(path.join(__dirname, '../app/build'))) // set public path
 app.use(express.json()) // parse incoming json
 app.use(articleRoute)
-//app.use(userRoute)
+app.use(userRoute)
 
 
 

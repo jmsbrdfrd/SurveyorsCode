@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
 
 const userSchema = new mongoose.Schema({
@@ -40,12 +41,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        minlength: 6,
-        validate(value) {
-            if (value.includes("password")) {
-                throw new Error('Password not right');
-            }
-        }
     },
     tokens: [{
         token: {
@@ -53,6 +48,15 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }]
+})
+
+
+// hash password before each save if password has been modified
+userSchema.pre('save', async function (next) {
+    if (this.isModified('password')) {
+        this.password = await bcrypt.hash(this.password, 8)
+    }
+    next()
 })
 
 
