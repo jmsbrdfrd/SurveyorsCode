@@ -19,7 +19,8 @@ const articleSchema = new mongoose.Schema({
     link: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        unique: true,
     },
     tags: {
         type: Array,
