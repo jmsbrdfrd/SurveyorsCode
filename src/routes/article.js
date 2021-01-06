@@ -19,9 +19,11 @@ router.post('/article', async (req, res) => {
 
 
 // read all articles
-router.get('/article', async (req, res) => {
+router.get('/article/:page', async (req, res) => {
+    const page = req.params.page
+    const limit = 1
     try {
-        const articles = await Article.find({})
+        const articles = await Article.find({}).skip(limit*page).limit(limit)
         if (!articles) {
             return res.status(404).send()
         }
@@ -35,6 +37,8 @@ router.get('/article', async (req, res) => {
 // read single article
 router.get('/article/:link', async (req, res) => {
     const link = req.params.link
+    const page = req.params.page
+    console.log(page)
     try {
         const article = await Article.findOne({ link: link })
         if (!article) {
