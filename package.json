@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "gulp start run"
+    "dev": "gulp start"
   },
   "author": "",
   "license": "ISC",
