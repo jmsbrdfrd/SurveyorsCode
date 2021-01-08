@@ -32,7 +32,8 @@ const userSchema = new mongoose.Schema({
     },
     saved: [{
         id: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Article',
             required: true
         }
     }],
