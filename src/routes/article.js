@@ -1,11 +1,12 @@
 const express = require('express')
 const router = new express.Router()
+const adminAuth = require('../middleware/adminAuth')
 
 const Article = require('../db/models/article')
 
 
 // create article
-router.post('/article', async (req, res) => {
+router.post('/article', adminAuth, async (req, res) => {
     const article = new Article(req.body) // create article
 
     try {
