@@ -6,23 +6,21 @@ const Article = require('../db/models/article')
 
 
 // add comment
-router.post('/comment/:id', auth, async (req, res) => {
+router.post('/comment/:articleid', auth, async (req, res) => {
+    const articleId = req.params.articleid
     const comment = new Comment(req.body)
-    // add article id
-    const articleId = req.params.id
-    comment.article = articleId
-    // add user id
-    const userId = req.user.id
-    comment.user = userId
-    // add date
-    const date = new Date()
-    comment.date = date    
+    comment.user =  req.user.id
+    comment.date = new Date()
 
     try {
         // add 1 to number of comments on article
-        const article = await Article.findById(req.params.id)
-        article.comments += 1
-        
+        const article = await Article.findById(articleId)
+        if (!article) {
+            return res.status(404).send(e)
+        }
+        article.commentsQty += 1
+        article.comments = article.comments.concat({ commentId: comment._id })
+
         await comment.save()
         await article.save()
         res.send()

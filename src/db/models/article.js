@@ -20,6 +20,7 @@ const articleSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
+        lowercase: true,
         unique: true,
     },
     tags: {
@@ -33,7 +34,14 @@ const articleSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    comments: {
+    comments: [{
+        commentId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Comment',
+            required: true
+        }
+    }],
+    commentsQty: {
         type: Number,
         default: 0
     },

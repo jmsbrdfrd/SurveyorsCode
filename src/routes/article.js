@@ -38,7 +38,7 @@ router.get('/articles', async (req, res) => {
                     link: { $first: '$link' },
                     hashtags: { $first: '$hashtags' },
                     likes: { $first: '$likes' },
-                    comments: { $first: '$comments'},
+                    commentsQty: { $first: '$commentsQty'},
                     saves: { $first: '$saves'},
                     numTags: { $sum: 1 }
                 } },
@@ -62,8 +62,9 @@ router.get('/articles', async (req, res) => {
 router.get('/article/:link', async (req, res) => {
     const link = req.params.link
     try {
-        const article = await Article.findOne({ link: link })
-        await Article.populate('Comments').execPopulate()
+        const article = await Article.findOne({ link })
+        await article.populate('comments.commentId').execPopulate()
+        await article.populate('comments.commentId.user').execPopulate()
         if (!article) {
             return res.status(404).send()
         }
