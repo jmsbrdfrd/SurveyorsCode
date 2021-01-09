@@ -37,6 +37,8 @@ router.get('/articles', async (req, res) => {
                     link: { $first: '$link' },
                     hashtags: { $first: '$hashtags' },
                     likes: { $first: '$likes' },
+                    comments: { $first: '$comments'},
+                    saves: { $first: '$saves'},
                     numTags: { $sum: 1 }
                 } },
                 { $sort: {numTags: -1 } }
