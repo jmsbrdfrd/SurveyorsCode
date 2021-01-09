@@ -83,7 +83,7 @@ router.get('/user/', auth, async (req, res) => {
 router.patch('/user', auth, async (req, res) => {
 
     const updates = Object.keys(req.body)
-    const updateIsValid = !updates.includes('joined') // don't allow user to update date joined
+    const updateIsValid = !(updates.includes('joined') || updates.includes('admin'))
 
     if (!updateIsValid) { // check updates are valid
         return res.status(400).send({error: "Updates aren't valid"})
