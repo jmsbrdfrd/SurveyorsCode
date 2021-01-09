@@ -18,11 +18,11 @@ router.post('/comment/:id', auth, async (req, res) => {
     const date = new Date()
     comment.date = date    
 
-    // add 1 to number of comments on article
-    const article = await Article.findById(req.params.id)
-    article.comments += 1
-
     try {
+        // add 1 to number of comments on article
+        const article = await Article.findById(req.params.id)
+        article.comments += 1
+        
         await comment.save()
         await article.save()
         res.send()
