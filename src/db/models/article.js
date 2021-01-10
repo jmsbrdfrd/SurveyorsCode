@@ -35,7 +35,7 @@ const articleSchema = new mongoose.Schema({
         default: 0
     },
     comments: [{
-        commentId: {
+        comment: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Comment',
             required: true

@@ -26,6 +26,8 @@ router.get('/articles', async (req, res) => {
 
     try {
         if (search !== ''){
+            // search and sort by relevance
+            // sorted by number of matches to tags field
             articles = await Article.aggregate([
                 { $match: { 'tags': {$in: search} } },
                 { $unwind: '$tags' },
@@ -63,8 +65,8 @@ router.get('/article/:link', async (req, res) => {
     const link = req.params.link
     try {
         const article = await Article.findOne({ link })
-        await article.populate('comments.commentId').execPopulate()
-        await article.populate('comments.commentId.user').execPopulate()
+        await article.populate('comments.comment').execPopulate()
+        await article.populate('comments.comment.user', '-email').execPopulate() // exclude email
         if (!article) {
             return res.status(404).send()
         }

@@ -21,7 +21,7 @@ router.post('/comment/:articleid', auth, async (req, res) => {
             return res.status(404).send(e)
         }
         article.commentsQty += 1
-        article.comments = article.comments.concat({ commentId: comment._id })
+        article.comments = article.comments.concat({ comment: comment._id })
 
         await comment.save()
         await article.save()
