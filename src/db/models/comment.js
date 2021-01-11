@@ -21,20 +21,11 @@ const commentSchema = new mongoose.Schema({
         required: true
     },
     replies: [{
-        message: {
-            type: String,
-            required: true,
-            trim: true
-        },
-        user: {
+        reply: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+            ref: 'Reply',
             required: true
-        },
-        date: {
-            type: Date,
-            required: true
-        } 
+        }
     }] // end of list of replies
 })
 

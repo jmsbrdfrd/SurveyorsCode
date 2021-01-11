@@ -67,6 +67,8 @@ router.get('/article/:link', async (req, res) => {
         const article = await Article.findOne({ link })
         await article.populate('comments.comment').execPopulate()
         await article.populate('comments.comment.user', '-email').execPopulate() // exclude email
+        await article.populate('comments.comment.replies.reply').execPopulate()
+        await article.populate('comments.comment.replies.reply.user').execPopulate()
         if (!article) {
             return res.status(404).send()
         }

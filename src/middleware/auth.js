@@ -9,7 +9,6 @@ const auth = async (req, res, next) => {
         const token = req.header('Authorization').replace('Bearer ', '') // get token from header
         const decoded = jwt.verify(token, process.env.JWT_KEY) // decode token
         const user = await User.findOne({ _id: decoded._id, 'tokens.token': token }) // find user by id on token, and check token exists for user
-        await user.populate('saved.id').execPopulate() // add list of saved articles
 
         if (!user) {
             throw new Error()

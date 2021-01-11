@@ -12,10 +12,12 @@ app.use(express.json()) // parse incoming json
 const articleRoute = require('./routes/article')
 const userRoute = require('./routes/user')
 const commentRoute = require('./routes/comment')
+const replyRoute = require('./routes/reply')
 
 app.use(articleRoute)
 app.use(userRoute)
 app.use(commentRoute)
+app.use(replyRoute)
 
 
 // get app
