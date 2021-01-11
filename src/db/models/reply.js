@@ -9,7 +9,8 @@ const replySchema = new mongoose.Schema({
     message: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        maxlength: 1000
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,

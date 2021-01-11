@@ -52,7 +52,6 @@ router.post('/user/logout', auth, async (req, res) => {
         req.user.tokens = req.user.tokens.filter((token) => {
             return token.token !== req.token // remove token that was used for auth
         })
-        console.log(req.token)
         await req.user.save()
         res.send()
     } catch (e) {
@@ -83,14 +82,12 @@ router.get('/user/', auth, async (req, res) => {
 router.patch('/user', auth, async (req, res) => {
 
     const updates = Object.keys(req.body)
-    // only allow updated of certain fields
-    const updateIsValid = !(updates.includes('joined')
-        || updates.includes('admin') 
-        || updates.includes('username')) 
-        || updates.includes('tokens') 
-        || updates.includes('token')
-        || updates.includes('saved')
-        || updates.includes('notifications')
+    // only allow user to update certain fields
+    const updateIsValid = !(updates.includes('joined') 
+    || updates.includes('score')
+    || updates.includes('tokens')
+    || updates.includes('saved')
+    || updates.includes('notifications'))
 
     if (!updateIsValid) { // check updates are valid
         return res.status(400).send({error: "Updates aren't valid"})

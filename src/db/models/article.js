@@ -30,10 +30,6 @@ const articleSchema = new mongoose.Schema({
     hashtags: {
         type: Array
     },
-    likes: {
-        type: Number,
-        default: 0
-    },
     comments: [{
         comment: {
             type: mongoose.Schema.Types.ObjectId,
@@ -48,8 +44,11 @@ const articleSchema = new mongoose.Schema({
     saves: {
         type: Number,
         default: 0
+    },
+    likes: {
+        type: Number,
+        default: 0
     }
-
 })
 
 

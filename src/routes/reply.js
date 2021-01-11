@@ -13,7 +13,6 @@ router.post('/reply/:commentid', auth, async (req, res) => {
         const comment = await Comment.findById(commentId)
         comment.replies = comment.replies.concat({ reply: reply._id })
         
-
         reply.comment = commentId
         reply.user = req.user.id
         reply.date = new Date()
@@ -24,8 +23,6 @@ router.post('/reply/:commentid', auth, async (req, res) => {
     } catch (e) {
         res.status(500).send()
     }
-
-
 })
 
 

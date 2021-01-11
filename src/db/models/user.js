@@ -12,27 +12,81 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
         lowercase: true,
-        unique: true
+        unique: true,
+        maxlength: 320
     },
     username: {
         type: String,
-        require: true,
+        required: true,
         trim: true,
         lowercase: true,
-        unique: true
+        unique: true,
+        maxlength: 40
     },
     name: {
         type: String,
         required: true,
-        trim: true
-    },
-    bio: {
-        type: String,
-        trim: true
+        trim: true,
+        maxlength: 40
     },
     image: {
         type: String,
-        default: '/imgs/user.png'
+        default: '/imgs/user.png' //  fix this later
+    },
+    bio: {
+        type: String,
+        trim: true,
+        maxlength: 400
+    },
+    location: {
+        type: String,
+        trim: true,
+        maxlength: 100
+    },
+    education: {
+        type: String,
+        trim: true,
+        maxlength: 100
+    },
+    jobtitle: {
+        type: String,
+        trim: true,
+        maxlength: 100
+    },
+    score: {
+        type: Number,
+        trim: true,
+        default: 0
+    },
+    company: {
+        type: String,
+        trim: true,
+        maxlength: 100
+    },
+    url: {
+        type: String,
+        trim: true,
+        maxlength: 200
+    },
+    facebook: {
+        type: String,
+        trim: true,
+        maxlength: 200
+    },
+    twitter: {
+        type: String,
+        trim: true,
+        maxlength: 200
+    },
+    linkedin: {
+        type: String,
+        trim: true,
+        maxlength: 200
+    },
+    instagram: {
+        type: String,
+        trim: true,
+        maxlength: 200
     },
     joined: {
         type: Date,
@@ -45,7 +99,7 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }],
-    notifications: [{
+    notifications: [{ // change structure later
         content: {
             type: String,
             required: true,
@@ -60,6 +114,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
+        maxlength: 100
     },
     tokens: [{
         token: {
@@ -73,11 +128,16 @@ const userSchema = new mongoose.Schema({
 })
 
 
-// hash password before each save if password has been modified
 userSchema.pre('save', async function (next) {
+    // hash password before each save if password has been modified
     if (this.isModified('password')) {
         this.password = await bcrypt.hash(this.password, 8)
     }
+    // do not allow update of joined and admin
+    if (this.isModified('joined') || this.isModified('admin') || this.isModified('username')) {
+        return next(new Error('Invalid updates')) // 
+    }
+
     next()
 })
 
