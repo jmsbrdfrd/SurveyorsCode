@@ -3,6 +3,7 @@ const router = new express.Router()
 const auth = require('../middleware/auth')
 const Comment = require('../db/models/comment')
 const Article = require('../db/models/article')
+const Reply = require('../db/models/reply')
 
 
 // add comment
@@ -35,6 +36,7 @@ router.post('/comment/:articleid', auth, async (req, res) => {
 // delete comment
 router.delete('/comment/:commentid', auth, async (req, res) => {
     try {
+        // find comment to delete
         const commentId = req.params.commentid
         const comment = await Comment.findById(commentId)
         if (!comment) {
@@ -48,9 +50,13 @@ router.delete('/comment/:commentid', auth, async (req, res) => {
         }
         await comment.remove()
 
+        // remove replies associated with this comment
+        const replyIds = comment.replies.map(reply => reply.reply)
+        await Reply.deleteMany({_id: { $in: replyIds }})
+
         // remove comment and -1 number of comments from article
         const article = await Article.findById(comment.article)
-        article.commentsQty -= 1
+        article.commentsQty -= ( 1 + replyIds.length )
         article.comments.pop({ commentId: commentId })
         await article.save()
 

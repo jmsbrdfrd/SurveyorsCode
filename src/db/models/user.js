@@ -133,11 +133,6 @@ userSchema.pre('save', async function (next) {
     if (this.isModified('password')) {
         this.password = await bcrypt.hash(this.password, 8)
     }
-    // do not allow update of joined and admin
-    if (this.isModified('joined') || this.isModified('admin') || this.isModified('username')) {
-        return next(new Error('Invalid updates')) // 
-    }
-
     next()
 })
 

@@ -83,7 +83,10 @@ router.patch('/user', auth, async (req, res) => {
 
     const updates = Object.keys(req.body)
     // only allow user to update certain fields
-    const updateIsValid = !(updates.includes('joined') 
+    const updateIsValid = !( updates.includes('joined')
+    || updates.includes('admin')
+    || updates.includes('username')
+    || updates.includes('joined') 
     || updates.includes('score')
     || updates.includes('tokens')
     || updates.includes('saved')

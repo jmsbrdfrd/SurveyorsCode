@@ -1,10 +1,15 @@
 const mongoose = require('mongoose')
 
 const replySchema = new mongoose.Schema({
+    article: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Article',
+        required: true
+    },
     comment: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment',
-        require: true
+        required: true
     },
     message: {
         type: String,

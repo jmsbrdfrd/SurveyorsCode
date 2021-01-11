@@ -8,6 +8,7 @@ const Article = require('../db/models/article')
 // create article
 router.post('/article', adminAuth, async (req, res) => {
     const article = new Article(req.body) // create article
+    article.date = new Date()
 
     try {
         await article.save() // attempt to save
