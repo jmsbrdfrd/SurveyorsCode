@@ -46,7 +46,7 @@ router.delete('/comment/:commentid', auth, async (req, res) => {
         if (!user._id.equals(comment.user)) {
             return res.status(401).send()
         }
-        comment.remove()
+        await comment.remove()
 
         // remove comment and -1 number of comments from article
         const article = await Article.findById(comment.article)

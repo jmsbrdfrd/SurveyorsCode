@@ -26,5 +26,24 @@ router.post('/reply/:commentid', auth, async (req, res) => {
 })
 
 
+router.delete('/reply/:replyid', auth, async (req, res) => {
+    try {
+        const replyId = req.params.replyid
+        const reply = await Reply.findById(replyId)
+        
+        // ensure user owns reply
+        if (!req.user._id.equals(reply.user)) {
+            return res.status(401).send()
+        }
+
+        await reply.remove()
+        res.send()
+
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
+
 
 module.exports = router
