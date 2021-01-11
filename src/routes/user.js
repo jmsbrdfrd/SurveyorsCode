@@ -11,11 +11,12 @@ router.post('/user', async (req, res) => {
     const user = new User(req.body) // create new instance of user
     user.admin = false
     user.joined = new Date()
+    user.score = 0
 
     try {
         await user.save()
         const token = await user.generateAuthToken() // create token for this user
-        res.status(201).send({user, token})
+        res.status(201).send({user, token}) // send back user and token
     } catch (e) {
         res.status(500).send(e) 
     }
@@ -63,7 +64,7 @@ router.post('/user/logout', auth, async (req, res) => {
 // logout user from all
 router.post('/user/logoutAll', auth, async (req, res) => {
     try {
-        req.user.tokens = []
+        req.user.tokens = [] // completely remove all tokens
         await req.user.save()
         res.send()
     } catch (e) {
@@ -74,7 +75,7 @@ router.post('/user/logoutAll', auth, async (req, res) => {
 
 // read user
 router.get('/user/', auth, async (req, res) => {
-    res.send(req.user)
+    res.send(req.user) // get user added to req from auth function
 })
 
 
@@ -83,14 +84,14 @@ router.patch('/user', auth, async (req, res) => {
 
     const updates = Object.keys(req.body)
     // only allow user to update certain fields
-    const updateIsValid = !( updates.includes('joined')
-    || updates.includes('admin')
-    || updates.includes('username')
-    || updates.includes('joined') 
-    || updates.includes('score')
-    || updates.includes('tokens')
-    || updates.includes('saved')
-    || updates.includes('notifications'))
+    const updateIsValid = ! (updates.includes('joined')
+        || updates.includes('admin')
+        || updates.includes('username')
+        || updates.includes('joined') 
+        || updates.includes('score')
+        || updates.includes('tokens')
+        || updates.includes('saved')
+        || updates.includes('notifications'))
 
     if (!updateIsValid) { // check updates are valid
         return res.status(400).send({error: "Updates aren't valid"})
@@ -109,7 +110,7 @@ router.patch('/user', auth, async (req, res) => {
 // delete a user
 router.delete('/user/delete', auth, async (req, res) => {
     try {
-        await req.user.remove()
+        await req.user.remove() // get user from auth function
         res.send(req.user)
     } catch (e) {
         res.status(500).send()

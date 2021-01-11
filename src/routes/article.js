@@ -6,12 +6,12 @@ const Article = require('../db/models/article')
 
 
 // create article
-router.post('/article', adminAuth, async (req, res) => {
+router.post('/article', adminAuth, async (req, res) => { // only allow admin to create article
     const article = new Article(req.body) // create article
-    article.date = new Date()
+    article.date = new Date() // set date created as now
 
     try {
-        await article.save() // attempt to save
+        await article.save()
         res.status(201).send(article)
     } catch (e) {
         res.status(500).send(e)
@@ -21,11 +21,12 @@ router.post('/article', adminAuth, async (req, res) => {
 
 // read all articles
 router.get('/articles', async (req, res) => {
-    const page = req.query.page ? req.query.page : 0
-    const search = req.query.search ? req.query.search.split(' ') : ''
+    const page = req.query.page ? req.query.page : 0 // return first 10 if page isn't populated
+    const search = req.query.search ? req.query.search.split(' ') : '' // split search into list if provided
     const limit = 10
 
     try {
+        // if search is provided
         if (search !== ''){
             // search and sort by relevance
             // sorted by number of matches to tags field
@@ -46,9 +47,9 @@ router.get('/articles', async (req, res) => {
                     numTags: { $sum: 1 }
                 } },
                 { $sort: {numTags: -1 } }
-            ]).skip(limit*page).limit(limit)
+            ]).skip(limit*page).limit(limit) // show 10 from this page
         } else {
-            articles = await Article.find({}).skip(limit*page).limit(limit)
+            articles = await Article.find({}).skip(limit*page).limit(limit) // else find all, limit to 10
         }
 
         if (!articles) {
@@ -66,8 +67,9 @@ router.get('/article/:link', async (req, res) => {
     const link = req.params.link
     try {
         const article = await Article.findOne({ link })
+        // comments and replies need to be populated when reading single link
         await article.populate('comments.comment').execPopulate()
-        await article.populate('comments.comment.user', '-email').execPopulate() // exclude email
+        await article.populate('comments.comment.user', '-email').execPopulate()
         await article.populate('comments.comment.replies.reply').execPopulate()
         await article.populate('comments.comment.replies.reply.user', '-email').execPopulate()
         if (!article) {

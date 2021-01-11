@@ -10,9 +10,11 @@ const Reply = require('../db/models/reply')
 router.post('/comment/:articleid', auth, async (req, res) => {
     
     try {
+        // find article to add comment to
         const articleId = req.params.articleid
         const article = await Article.findById(articleId)
 
+        // create comment
         const comment = new Comment(req.body)
         comment.user =  req.user.id
         comment.date = new Date()
@@ -21,8 +23,8 @@ router.post('/comment/:articleid', auth, async (req, res) => {
         if (!article) {
             return res.status(404).send(e)
         }
-        article.commentsQty += 1
-        article.comments = article.comments.concat({ comment: comment._id })
+        article.commentsQty += 1 // increase comments qty
+        article.comments = article.comments.concat({ comment: comment._id }) // link this comment
 
         await comment.save()
         await article.save()
@@ -51,13 +53,13 @@ router.delete('/comment/:commentid', auth, async (req, res) => {
         await comment.remove()
 
         // remove replies associated with this comment
-        const replyIds = comment.replies.map(reply => reply.reply)
+        const replyIds = comment.replies.map(reply => reply.reply) // get list of reply ids
         await Reply.deleteMany({_id: { $in: replyIds }})
 
-        // remove comment and -1 number of comments from article
+        // remove comment and calculate new comments qty
         const article = await Article.findById(comment.article)
-        article.commentsQty -= ( 1 + replyIds.length )
-        article.comments.pop({ commentId: commentId })
+        article.comments.pop({ commentId: commentId }) // remove comment
+        article.commentsQty -= ( 1 + replyIds.length ) // remove 1 for comment + no. of replies
         await article.save()
 
         res.send()
