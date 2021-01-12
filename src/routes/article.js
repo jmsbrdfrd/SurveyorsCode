@@ -3,12 +3,14 @@ const router = new express.Router()
 const adminAuth = require('../middleware/adminAuth')
 
 const Article = require('../db/models/article')
+const User = require('../db/models/user')
 
 
 // create article
 router.post('/article', adminAuth, async (req, res) => { // only allow admin to create article
     const article = new Article(req.body) // create article
     article.date = new Date() // set date created as now
+    article.author = req.user._id // assign author to article
 
     try {
         await article.save()
@@ -38,16 +40,20 @@ router.get('/articles', async (req, res) => {
                     _id: '$_id',            
                     title: { $first: '$title' },
                     description: { $first: '$description' },
-                    date: { $first: '$date'} ,
+                    date: { $first: '$date' } ,
                     link: { $first: '$link' },
                     hashtags: { $first: '$hashtags' },
                     likes: { $first: '$likes' },
-                    commentsQty: { $first: '$commentsQty'},
-                    saves: { $first: '$saves'},
+                    commentsQty: { $first: '$commentsQty' },
+                    saves: { $first: '$saves' },
+                    author: { $first: '$author' },
                     numTags: { $sum: 1 }
                 } },
-                { $sort: {numTags: -1 } }
-            ]).skip(limit*page).limit(limit) // show 10 from this page
+                { $sort: {numTags: -1 } },
+                { $skip: limit*page },
+                { $limit: limit }
+            ])
+            await User.populate(articles, {path: "author"})
         } else {
             articles = await Article.find({}).skip(limit*page).limit(limit) // else find all, limit to 10
         }
@@ -67,7 +73,8 @@ router.get('/article/:link', async (req, res) => {
     const link = req.params.link
     try {
         const article = await Article.findOne({ link })
-        // comments and replies need to be populated when reading single link
+        // author, comments, and replies need to be populated when reading single link
+        await article.populate('author').execPopulate()
         await article.populate('comments.comment').execPopulate()
         await article.populate('comments.comment.user', '-email').execPopulate()
         await article.populate('comments.comment.replies.reply').execPopulate()
