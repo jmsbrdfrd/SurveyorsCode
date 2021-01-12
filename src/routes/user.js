@@ -75,6 +75,7 @@ router.post('/user/logoutAll', auth, async (req, res) => {
 
 // read user
 router.get('/user/', auth, async (req, res) => {
+    await req.user.populate('posts.post').execPopulate()
     res.send(req.user) // get user added to req from auth function
 })
 

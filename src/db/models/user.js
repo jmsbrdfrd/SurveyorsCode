@@ -92,6 +92,13 @@ const userSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    posts: [{
+        post: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Article',
+            required: true
+        }
+    }],
     saved: [{
         id: {
             type: mongoose.Schema.Types.ObjectId,

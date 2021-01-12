@@ -11,9 +11,11 @@ router.post('/article', adminAuth, async (req, res) => { // only allow admin to 
     const article = new Article(req.body) // create article
     article.date = new Date() // set date created as now
     article.author = req.user._id // assign author to article
+    req.user.posts = req.user.posts.concat({ post: article._id })
 
     try {
         await article.save()
+        await req.user.save()
         res.status(201).send(article)
     } catch (e) {
         res.status(500).send(e)
