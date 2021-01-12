@@ -9,9 +9,13 @@ const User = require('../db/models/user')
 // create user
 router.post('/user', async (req, res) => {
     const user = new User(req.body) // create new instance of user
-    user.admin = false
     user.joined = new Date()
     user.score = 0
+    user.posts = []
+    user.saved = []
+    user.notifications = []
+    user.tokens = []
+    user.admin = false
 
     try {
         await user.save()
@@ -93,6 +97,7 @@ router.patch('/user', auth, async (req, res) => {
         || updates.includes('tokens')
         || updates.includes('saved')
         || updates.includes('notifications'))
+        || updates.includes('posts')
 
     if (!updateIsValid) { // check updates are valid
         return res.status(400).send({error: "Updates aren't valid"})
