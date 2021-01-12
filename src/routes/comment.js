@@ -23,7 +23,6 @@ router.post('/comment/:articleid', auth, async (req, res) => {
         if (!article) {
             return res.status(404).send(e)
         }
-        article.commentsQty += 1 // increase comments qty
         article.comments = article.comments.concat({ comment: comment._id }) // link this comment
 
         await comment.save()
@@ -59,7 +58,6 @@ router.delete('/comment/:commentid', auth, async (req, res) => {
         // remove comment and calculate new comments qty
         const article = await Article.findById(comment.article)
         article.comments.pop({ commentId: commentId }) // remove comment
-        article.commentsQty -= ( 1 + replyIds.length ) // remove 1 for comment + no. of replies
         await article.save()
 
         res.send()

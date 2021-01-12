@@ -42,10 +42,6 @@ const articleSchema = new mongoose.Schema({
             required: true
         }
     }],
-    commentsQty: {
-        type: Number,
-        default: 0
-    },
     saves: {
         type: Number,
         default: 0
