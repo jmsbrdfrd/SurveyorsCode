@@ -46,7 +46,7 @@ router.get('/articles', async (req, res) => {
                     link: { $first: '$link' },
                     hashtags: { $first: '$hashtags' },
                     likes: { $first: '$likes' },
-                    commentsQty: { $first: '$commentsQty' },
+                    comments: { $first: '$comments'},
                     saves: { $first: '$saves' },
                     author: { $first: '$author' },
                     numTags: { $sum: 1 }
