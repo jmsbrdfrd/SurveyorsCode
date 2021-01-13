@@ -58,7 +58,8 @@ router.get('/articles', async (req, res) => {
             ])
             await User.populate(articles, {path: "author"})
         } else {
-            articles = await Article.find({}).skip(limit*page).limit(limit) // else find all, limit to 10
+            // if search is not provided, find all sorted by date
+            articles = await Article.find({}).sort({ date: 1 }).skip(limit*page).limit(limit) // else find all, limit to 10
         }
 
         if (!articles) {
