@@ -111,4 +111,24 @@ router.post('/article/like/:articleid', auth, async (req, res) => {
     }
 })
 
+
+
+// save article
+router.post('/article/save/:articleid', auth, async (req, res) => {
+    const id = req.params.articleid
+
+    try {
+        const article = await Article.findById(id)
+
+        article.saves = article.saves.concat({ user: req.user._id })
+        req.user.saved = req.user.saved.concat({ article: article._id })
+
+        await article.save()
+        await req.user.save()
+        res.send()
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
 module.exports = router

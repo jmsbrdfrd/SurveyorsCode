@@ -42,10 +42,13 @@ const articleSchema = new mongoose.Schema({
             required: true
         }
     }],
-    saves: {
-        type: Number,
-        default: 0
-    },
+    saves: [{
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        }
+    }],
     likes: [{
         user: {
             type: mongoose.Schema.Types.ObjectId,
