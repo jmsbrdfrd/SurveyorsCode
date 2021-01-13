@@ -100,9 +100,14 @@ router.post('/article/like/:articleid', auth, async (req, res) => {
     try {
         const article = await Article.findById(id)
 
-        article.likes = article.likes.concat({ user: req.user._id })
-        req.user.liked = req.user.liked.concat({ article: article._id })
-
+        // if user has already liked the post
+        if (req.user.liked.filter((like) => like.article.equals(id)).length > 0) {
+            article.likes = article.likes.filter((user) => !user.user.equals(req.user._id))
+            req.user.liked = req.user.saved.filter((like) => !like.article.equals(article._id))
+        } else { // if user hasn't already liked
+            article.likes = article.likes.concat({ user: req.user._id })
+            req.user.liked = req.user.liked.concat({ article: article._id })
+        }
         await article.save()
         await req.user.save()   
         res.send()
@@ -120,8 +125,14 @@ router.post('/article/save/:articleid', auth, async (req, res) => {
     try {
         const article = await Article.findById(id)
 
-        article.saves = article.saves.concat({ user: req.user._id })
-        req.user.saved = req.user.saved.concat({ article: article._id })
+        // if user has already saved this post, unsave it
+        if (req.user.saved.filter((save) => save.article.equals(id)).length > 0) {
+            article.saves = article.saves.filter((user) => !user.user.equals(req.user._id))
+            req.user.saved = req.user.saved.filter((save) => !save.article.equals(article._id))
+        } else { // else save the post
+            article.saves = article.saves.concat({ user: req.user._id })
+            req.user.saved = req.user.saved.concat({ article: article._id })
+        }        
 
         await article.save()
         await req.user.save()
