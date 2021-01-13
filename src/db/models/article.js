@@ -46,10 +46,13 @@ const articleSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    likes: {
-        type: Number,
-        default: 0
-    }
+    likes: [{
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        }
+    }]
 })
 
 

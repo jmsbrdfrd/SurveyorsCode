@@ -1,13 +1,14 @@
 const express = require('express')
 const router = new express.Router()
 const adminAuth = require('../middleware/adminAuth')
+const auth = require('../middleware/auth')
 
 const Article = require('../db/models/article')
 const User = require('../db/models/user')
 
-
 // create article
 router.post('/article', adminAuth, async (req, res) => { // only allow admin to create article
+
     const article = new Article(req.body) // create article
     article.date = new Date() // set date created as now
     article.author = req.user._id // assign author to article
@@ -90,5 +91,23 @@ router.get('/article/:link', async (req, res) => {
     }
 })
 
+
+// like article
+router.post('/article/like/:articleid', auth, async (req, res) => {
+    const id = req.params.articleid
+
+    try {
+        const article = await Article.findById(id)
+
+        article.likes = article.likes.concat({ user: req.user._id })
+        req.user.liked = req.user.liked.concat({ article: article._id })
+
+        await article.save()
+        await req.user.save()   
+        res.send()
+    } catch (e) {
+        res.status(500).send()
+    }
+})
 
 module.exports = router

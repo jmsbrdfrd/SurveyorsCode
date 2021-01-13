@@ -100,7 +100,14 @@ const userSchema = new mongoose.Schema({
         }
     }],
     saved: [{
-        id: {
+        article: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Article',
+            required: true
+        }
+    }],
+    liked: [{
+        article: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Article',
             required: true
