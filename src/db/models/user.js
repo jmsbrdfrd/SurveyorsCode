@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const validator = require('validator')
+const { validate } = require('./article')
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
@@ -27,7 +28,13 @@ const userSchema = new mongoose.Schema({
         trim: true,
         lowercase: true,
         unique: true,
-        maxlength: 40
+        maxlength: 20,
+        minlength: 6,
+        validate(username) {
+            if (!validator.matches(username, '^[a-zA-Z0-9_\-]*$')) {
+                throw new Error('Username is not valid')
+            }
+        }
     },
     name: {
         type: String,
