@@ -67,4 +67,32 @@ router.delete('/comment/:commentid', auth, async (req, res) => {
 })
 
 
+// like a comment
+router.post('/comment/like/:commentid', auth, async (req, res) => {
+    try {
+        const commentId = req.params.commentid
+        const comment = await Comment.findById(commentId)
+        if (!comment) {
+            return res.status(404).send()
+        }
+
+        // if user has already liked comment - unlike it
+        if (req.user.likedComments.filter((comment) => comment.comment.equals(commentId)).length > 0) {
+            comment.likes = comment.likes.filter((user) => !user.user.equals(req.user._id))
+            req.user.likedComments = req.user.likedComments.filter((comment) => !comment.comment.equals(commentId))
+        } else { // if user has not already liked comment
+            comment.likes = comment.likes.concat({ user: req.user._id })
+            req.user.likedComments = req.user.likedComments.concat({ comment: comment._id })
+        }
+
+        await comment.save()
+        await req.user.save()
+        res.send()
+
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
+
 module.exports = router

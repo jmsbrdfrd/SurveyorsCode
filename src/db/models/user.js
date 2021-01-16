@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const validator = require('validator')
-const { validate } = require('./article')
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
@@ -123,6 +122,13 @@ const userSchema = new mongoose.Schema({
         article: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Article',
+            required: true
+        }
+    }],
+    likedComments: [{
+        comment: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'comment',
             required: true
         }
     }],
