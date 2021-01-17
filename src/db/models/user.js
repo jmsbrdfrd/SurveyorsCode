@@ -132,6 +132,13 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }],
+    likedReplies: [{
+        reply: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'reply',
+            required: true
+        }
+    }],
     notifications: [{ // change structure later
         content: {
             type: String,

@@ -25,7 +25,14 @@ const replySchema = new mongoose.Schema({
     date: {
         type: Date,
         required: true,
-    }
+    },
+    likes: [{
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        }
+    }]
 })
 
 
