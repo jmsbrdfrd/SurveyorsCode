@@ -80,7 +80,7 @@ router.post('/user/logoutAll', auth, async (req, res) => {
 // read user
 router.get('/user/', auth, async (req, res) => {
     await req.user.populate('posts.post').execPopulate()
-    await req.user.populate('saved.article').execPopulate()
+    await req.user.populate('saved.article').execPopulate() 
     res.send(req.user) // get user added to req from auth function
 })
 
@@ -97,8 +97,8 @@ router.patch('/user', auth, async (req, res) => {
         || updates.includes('score')
         || updates.includes('tokens')
         || updates.includes('saved')
-        || updates.includes('notifications'))
-        || updates.includes('posts')
+        || updates.includes('notifications')
+        || updates.includes('posts'))
 
     if (!updateIsValid) { // check updates are valid
         return res.status(400).send({error: "Updates aren't valid"})
