@@ -8,16 +8,18 @@ const User = require('../db/models/user')
 
 // create user
 router.post('/user', async (req, res) => {
-    const user = new User(req.body) // create new instance of user
-    user.joined = new Date()
-    user.score = 0
-    user.posts = []
-    user.saved = []
-    user.notifications = []
-    user.tokens = []
-    user.admin = false
-
     try {
+        const user = new User(req.body) // create new instance of user
+
+        // check user has not supplied any additional information
+        const fields = Object.keys(req.body)
+        const allowedFields = ['email', 'name', 'username', 'password']
+        if (fields.filter((field) => !allowedFields.includes(field)).length > 0) {
+            return res.status(500).send()
+        }
+    
+        user.joined = new Date()
+    
         await user.save()
         const token = await user.generateAuthToken() // create token for this user
         res.status(201).send({user, token}) // send back user and token
