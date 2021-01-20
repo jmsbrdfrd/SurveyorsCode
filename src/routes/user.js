@@ -9,7 +9,8 @@ const User = require('../db/models/user')
 // create user
 router.post('/user', async (req, res) => {
     try {
-        const user = new User(req.body) // create new instance of user
+        // create new instance of user
+        const user = new User(req.body)
 
         // check user has not supplied any additional information
         const fields = Object.keys(req.body)
@@ -19,8 +20,8 @@ router.post('/user', async (req, res) => {
         }
     
         user.joined = new Date()
-    
         await user.save()
+        
         const token = await user.generateAuthToken() // create token for this user
         res.status(201).send({user, token}) // send back user and token
     } catch (e) {
