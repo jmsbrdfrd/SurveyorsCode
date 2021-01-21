@@ -140,13 +140,9 @@ const userSchema = new mongoose.Schema({
         }
     }],
     notifications: [{ // change structure later
-        content: {
-            type: String,
-            required: true,
-            trim: true,
-        },
-        read: {
-            type: Boolean,
+        notification: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'notification',
             required: true
         }
     }],

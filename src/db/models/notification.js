@@ -26,6 +26,11 @@ const notificationSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true
+    },
+    read: {
+        type: Boolean,
+        required: true,
+        trim: true
     }
 })
 
