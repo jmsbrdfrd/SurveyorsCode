@@ -22,11 +22,6 @@ router.post('/reply/:commentid', auth, async (req, res) => {
         reply.user = req.user.id // get user from auth function
         reply.date = new Date()
 
-        // find article and increase commentsQty by 1
-        const article = await Article.findById(comment.article)
-        article.commentsQty += 1
-
-        await article.save()
         await comment.save()
         await reply.save()
         res.send(reply)
