@@ -184,22 +184,27 @@ userSchema.methods.generateAuthToken = async function () {
 
 userSchema.methods.sendNotification = async function (from, message, link, unique) {
 
-    // create notification
-    const notification = new Notification({
-        owner: this._id,
-        from: from,
-        message: message,
-        date: new Date(),
-        link: link,
-        read: false,
-        unique: unique
-    })
-    // save notification
-    await notification.save()
+    try {
+        // create notification
+        const notification = new Notification({
+            owner: this._id,
+            from: from,
+            message: message,
+            date: new Date(),
+            link: link,
+            read: false,
+            unique: unique
+        })
+        // save notification
+        await notification.save()
+        
+        // add notification to user
+        this.notifications = this.notifications.concat({notification: notification._id})
+        await this.save()
+    } catch (e) {
+        console.log('creating notification failed') //  fix this later???
+    }
     
-    // add notification to user
-    this.notifications = this.notifications.concat({notification: notification._id})
-    await this.save()
 }
 
 // don't allow password or tokens to be returned
