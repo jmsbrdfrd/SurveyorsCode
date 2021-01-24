@@ -18,7 +18,8 @@ router.post('/user', async (req, res) => {
         if (fields.filter((field) => !allowedFields.includes(field)).length > 0) {
             return res.status(500).send()
         }
-    
+        
+        user.admin = false
         user.joined = new Date()
         await user.save()
         
@@ -84,6 +85,7 @@ router.post('/user/logoutAll', auth, async (req, res) => {
 router.get('/user/', auth, async (req, res) => {
     await req.user.populate('posts.post').execPopulate()
     await req.user.populate('saved.article').execPopulate() 
+    await req.user.populate('notifications.notification').execPopulate()
     res.send(req.user) // get user added to req from auth function
 })
 
