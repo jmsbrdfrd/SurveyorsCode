@@ -31,6 +31,12 @@ const notificationSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
         trim: true
+    },
+    unique: { // to ensure same notification is never sent twice
+        type: String,
+        required: true,
+        unique: true,
+        trim: true
     }
 })
 

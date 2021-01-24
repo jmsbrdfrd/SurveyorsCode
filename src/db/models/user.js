@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const validator = require('validator')
+const Notification = require('./notification')
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
@@ -179,6 +180,26 @@ userSchema.methods.generateAuthToken = async function () {
     this.tokens = this.tokens.concat({ token })
     await this.save()
     return token
+}
+
+userSchema.methods.sendNotification = async function (from, message, link, item) {
+
+    // create notification
+    const notification = new Notification({
+        owner: this._id,
+        from: from,
+        message: message,
+        date: new Date(),
+        link: link,
+        read: false,
+        item: item
+    })
+    // save notification
+    await notification.save()
+    
+    // add notification to user
+    this.notifications = this.notifications.concat({notification: notification._id})
+    await this.save()
 }
 
 // don't allow password or tokens to be returned
