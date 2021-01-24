@@ -99,6 +99,7 @@ router.post('/article/like/:articleid', auth, async (req, res) => {
 
     try {
         const article = await Article.findById(id)
+        const author = await User.findById(article.author)
 
         // if user has already liked the post
         if (req.user.liked.filter((like) => like.article.equals(id)).length > 0) {
@@ -107,6 +108,7 @@ router.post('/article/like/:articleid', auth, async (req, res) => {
         } else { // if user hasn't already liked
             article.likes = article.likes.concat({ user: req.user._id })
             req.user.liked = req.user.liked.concat({ article: article._id })
+            await author.sendNotification(req.user._id, 'liked your post.', article.link, req.user._id + article._id)
         }
         await article.save()
         await req.user.save()   

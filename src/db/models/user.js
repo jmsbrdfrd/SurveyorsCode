@@ -143,7 +143,7 @@ const userSchema = new mongoose.Schema({
     notifications: [{ // change structure later
         notification: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'notification',
+            ref: 'Notification',
             required: true
         }
     }],
@@ -202,7 +202,7 @@ userSchema.methods.sendNotification = async function (from, message, link, uniqu
         this.notifications = this.notifications.concat({notification: notification._id})
         await this.save()
     } catch (e) {
-        console.log('creating notification failed') //  fix this later???
+        console.log(e) //  fix this later???
     }
     
 }
