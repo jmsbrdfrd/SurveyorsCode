@@ -66,27 +66,22 @@ router.post('/reply/like/:replyid', auth, async (req, res, next) => {
             return res.status(404).send()
         }
 
-        // get person who wrote reply
-        const author = await User.findById(reply.user)
-
-        // get link for article this reply is on
-        const comment = await Comment.findById(reply.comment)
-        const article = await Article.findById(comment.article)
-
         // if user has already liked reply - unlike it
-        if (req.user.likedReplies.filter((reply) => reply.reply.equals(replyId)).length > 0) {
+        if (reply.likes.filter((like) => like.user.equals(req.user._id)).length > 0) {
             reply.likes = reply.likes.filter((user) => !user.user.equals(req.user._id))
-            req.user.likedReplies = req.user.likedReplies.filter((reply) => !reply.reply.equals(replyId))
         } else { // if user has not already liked
+            
+            // get link for article this reply is on
+            const comment = await Comment.findById(reply.comment)
+            const article = await Article.findById(comment.article)
+            const author = await User.findById(reply.user) // get person who wrote reply
+
             reply.likes = reply.likes.concat({ user: req.user._id })
-            req.user.likedReplies = req.user.likedReplies.concat({ reply: reply._id })
             await author.sendNotification(req.user._id, 'liked your comment.', article.link, req.user._id + reply._id)
         }
 
         await reply.save()
-        await req.user.save()
         res.send()
-
     } catch (e) {
         res.status(500).send(e)
     }

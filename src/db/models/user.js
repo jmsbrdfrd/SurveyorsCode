@@ -126,20 +126,6 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }],
-    likedComments: [{
-        comment: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'comment',
-            required: true
-        }
-    }],
-    likedReplies: [{
-        reply: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'reply',
-            required: true
-        }
-    }],
     notifications: [{ // change structure later
         notification: {
             type: mongoose.Schema.Types.ObjectId,
