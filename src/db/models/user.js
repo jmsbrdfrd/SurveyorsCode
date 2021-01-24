@@ -182,7 +182,7 @@ userSchema.methods.generateAuthToken = async function () {
     return token
 }
 
-userSchema.methods.sendNotification = async function (from, message, link, item) {
+userSchema.methods.sendNotification = async function (from, message, link, unique) {
 
     // create notification
     const notification = new Notification({
@@ -192,7 +192,7 @@ userSchema.methods.sendNotification = async function (from, message, link, item)
         date: new Date(),
         link: link,
         read: false,
-        item: item
+        unique: unique
     })
     // save notification
     await notification.save()
