@@ -173,7 +173,7 @@ userSchema.methods.sendNotification = async function (from, message, link, uniqu
     try {
         // if this notification doesn't already exist
         // this can occur when user likes, unlikes, and likes something
-        if (await Notification.find({unique})) {
+        if (! await Notification.find({unique})) {
 
             // ensure you don't get notification about your own event
             if (!this._id.equals(from)) {
@@ -196,7 +196,7 @@ userSchema.methods.sendNotification = async function (from, message, link, uniqu
                 await this.save()
 
             }
-        }
+        } 
     } catch (e) {
         console.log(e) //  fix this later???
     }
