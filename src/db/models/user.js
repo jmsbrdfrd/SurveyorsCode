@@ -187,24 +187,29 @@ userSchema.methods.sendNotification = async function (from, message, link, uniqu
     try {
         // if this notification doesn't already exist
         // this can occur when user likes, unlikes, and likes something
-        if (await Notification.findOne({ unique }).length > 0) {
+        if (await Notification.find({unique})) {
 
-            // create notification
-            const notification = new Notification({
-                owner: this._id,
-                from: from,
-                message: message,
-                date: new Date(),
-                link: link,
-                read: false,
-                unique: unique
-            })
-            // save notification
-            await notification.save()
-            
-            // add notification to user
-            this.notifications = this.notifications.concat({notification: notification._id})
-            await this.save()
+            // ensure you don't get notification about your own event
+            if (!this._id.equals(from)) {
+
+                // create notification
+                const notification = new Notification({
+                    owner: this._id,
+                    from: from,
+                    message: message,
+                    date: new Date(),
+                    link: link,
+                    read: false,
+                    unique: unique
+                })
+                // save notification
+                await notification.save()
+                
+                // add notification to user
+                this.notifications = this.notifications.concat({notification: notification._id})
+                await this.save()
+
+            }
         }
     } catch (e) {
         console.log(e) //  fix this later???
