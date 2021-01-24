@@ -4,6 +4,7 @@ const auth = require('../middleware/auth')
 const Comment = require('../db/models/comment')
 const Article = require('../db/models/article')
 const Reply = require('../db/models/reply')
+const User = require('../db/models/user')
 
 
 // add comment
@@ -13,10 +14,11 @@ router.post('/comment/:articleid', auth, async (req, res) => {
         // find article to add comment to
         const articleId = req.params.articleid
         const article = await Article.findById(articleId)
+        const author = await User.findById(article.author)
 
         // create comment
         const comment = new Comment(req.body)
-        comment.user =  req.user.id
+        comment.user =  req.user._id
         comment.date = new Date()
         comment.article = articleId
 
@@ -25,6 +27,7 @@ router.post('/comment/:articleid', auth, async (req, res) => {
         }
         article.comments = article.comments.concat({ comment: comment._id }) // link this comment
 
+        await author.sendNotification(req.user._id, 'commented on your post.', article.link, article._id + comment._id)
         await comment.save()
         await article.save()
         res.send(comment)
