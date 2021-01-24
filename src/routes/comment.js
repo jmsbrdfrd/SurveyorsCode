@@ -78,6 +78,8 @@ router.post('/comment/like/:commentid', auth, async (req, res) => {
         if (!comment) {
             return res.status(404).send()
         }
+        const article = await Article.findById(comment.article)
+        const author = await User.findById(article.author)
 
         // if user has already liked comment - unlike it
         if (req.user.likedComments.filter((comment) => comment.comment.equals(commentId)).length > 0) {
@@ -86,6 +88,7 @@ router.post('/comment/like/:commentid', auth, async (req, res) => {
         } else { // if user has not already liked comment
             comment.likes = comment.likes.concat({ user: req.user._id })
             req.user.likedComments = req.user.likedComments.concat({ comment: comment._id })
+            await author.sendNotification(req.user._id, 'liked your comment.', article.link, req.user._id + comment._id)
         }
 
         await comment.save()
