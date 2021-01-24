@@ -185,22 +185,27 @@ userSchema.methods.generateAuthToken = async function () {
 userSchema.methods.sendNotification = async function (from, message, link, unique) {
 
     try {
-        // create notification
-        const notification = new Notification({
-            owner: this._id,
-            from: from,
-            message: message,
-            date: new Date(),
-            link: link,
-            read: false,
-            unique: unique
-        })
-        // save notification
-        await notification.save()
-        
-        // add notification to user
-        this.notifications = this.notifications.concat({notification: notification._id})
-        await this.save()
+        // if this notification doesn't already exist
+        // this can occur when user likes, unlikes, and likes something
+        if (await Notification.findOne({ unique }).length > 0) {
+
+            // create notification
+            const notification = new Notification({
+                owner: this._id,
+                from: from,
+                message: message,
+                date: new Date(),
+                link: link,
+                read: false,
+                unique: unique
+            })
+            // save notification
+            await notification.save()
+            
+            // add notification to user
+            this.notifications = this.notifications.concat({notification: notification._id})
+            await this.save()
+        }
     } catch (e) {
         console.log(e) //  fix this later???
     }
