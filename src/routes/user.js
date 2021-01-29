@@ -86,7 +86,7 @@ router.get('/user/', auth, async (req, res) => {
     await req.user.populate('posts.post').execPopulate()
     await req.user.populate('saved.article').execPopulate() 
     await req.user.populate('notifications.notification').execPopulate()
-    res.send(req.user) // get user added to req from auth function
+    res.send(req.user.toPrivateJSON()) // get user added to req from auth function
 })
 
 

@@ -203,6 +203,16 @@ userSchema.methods.sendNotification = async function (from, message, link, uniqu
     
 }
 
+userSchema.methods.toPrivateJSON = function () {
+    const userObject = this.toObject()
+
+    delete userObject.password
+    delete userObject.tokens
+    delete userObject.admin
+
+    return userObject
+}
+
 // don't allow password or tokens to be returned
 userSchema.methods.toJSON = function () {
     const userObject = this.toObject()
@@ -210,6 +220,9 @@ userSchema.methods.toJSON = function () {
     delete userObject.password
     delete userObject.tokens
     delete userObject.admin
+    delete userObject.email
+    delete userObject.notifications
+    delete userObject.liked
 
     return userObject
 }
