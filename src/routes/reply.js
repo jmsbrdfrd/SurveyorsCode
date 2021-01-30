@@ -26,6 +26,31 @@ router.post('/reply/:commentid', auth, async (req, res) => {
         await comment.save()
         await reply.save()
         res.send(reply)
+
+
+        // send notification to original comment owner
+        await comment.populate('article').execPopulate()
+        const commentAuthor = await User.findById(comment.user)
+        await commentAuthor.sendNotification(req.user._id, 'replied to your comment.', comment.article.link, reply._id)
+
+        // get list of other people who have replied
+        await comment.populate('replies.reply').execPopulate() // populate people to send notification to
+
+        // get list of their ids
+        let users = []
+        comment.replies.filter((reply) => {
+            const user = String(reply.reply.user)
+            if ((!users.includes(user)) && user !== String(comment.user)) {
+                users.push(user)
+            }
+        })
+
+        // send notification to the others that have replied
+        users.map(async (id) => {
+            const user = await User.findById(id)
+            await user.sendNotification(req.user._id, 'also replied to a comment.', comment.article.link, reply._id)
+        })
+
     } catch (e) {
         res.status(500).send()
     }
