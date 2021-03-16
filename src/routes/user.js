@@ -91,7 +91,15 @@ router.get('/user', auth, async (req, res) => {
 
 
 // read another user
-
+router.get('/user/find/:username', async (req, res) => {
+    const username = req.params.username
+    try {
+        const user = await User.findOne({username})
+        res.send(user)
+    } catch (e) {
+        res.status(404).send()
+    }
+})
 
 
 // update user

@@ -173,7 +173,6 @@ userSchema.methods.sendNotification = async function (from, message, link, uniqu
     try {
         // if this notification doesn't already exist
         // this can occur when user likes, unlikes, and likes something
-
         if (Object.keys( await Notification.find({unique, owner: this._id}) ).length === 0) {
 
             // ensure you don't get notification about your own event
