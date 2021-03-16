@@ -2,9 +2,9 @@ const express = require('express')
 const router = new express.Router()
 const adminAuth = require('../middleware/adminAuth')
 const auth = require('../middleware/auth')
-
 const Article = require('../db/models/article')
 const User = require('../db/models/user')
+
 
 // create article
 router.post('/article', adminAuth, async (req, res) => { // only allow admin to create article
@@ -70,6 +70,7 @@ router.get('/articles', async (req, res) => {
         res.status(500).send(e)
     }
 })
+
 
 
 // read single article
